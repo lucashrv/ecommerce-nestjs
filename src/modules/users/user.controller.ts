@@ -1,9 +1,9 @@
 import { Controller, Get } from "@nestjs/common";
 
 @Controller("/api")
-export class UsersController {
+export class UserController {
     @Get("/users")
-    getUsers(): object {
+    getUsers() {
         return {};
     }
 }
