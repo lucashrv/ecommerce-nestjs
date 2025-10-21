@@ -1,1 +1,13 @@
-GET http://localhost:3000
+@baseUrl = http://localhost:3000
+
+###
+GET {{baseUrl}}
+
+###
+POST {{baseUrl}}/user/create
+Content-Type: application/json
+
+{
+    "email": "email@gmail.com",
+    "password": "123456"
+}
