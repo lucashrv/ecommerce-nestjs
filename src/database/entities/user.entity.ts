@@ -5,13 +5,13 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ length: 100, nullable: false })
+    @Column({ type: "string", length: 100 })
     name: string;
 
-    @Column({ unique: true, nullable: false })
+    @Column({ unique: true })
     email: string;
 
-    @Column({ unique: true, nullable: false })
+    @Column({ unique: true })
     password: string;
 
     @Column({
@@ -26,4 +26,10 @@ export class User {
 
     @Column({ default: true })
     is_active: boolean;
+
+    @Column({ default: new Date() })
+    updatedAt: Date;
+
+    @Column({ default: new Date() })
+    createdAt: Date;
 }
