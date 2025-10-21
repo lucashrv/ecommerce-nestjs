@@ -25,5 +25,4 @@ export class UserService {
     remove(id: number) {
         return `This action removes a #${id} user`;
     }
-    //parei na criação de factory com typeorm(criar um repository factory)
 }

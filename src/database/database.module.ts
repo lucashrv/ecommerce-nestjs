@@ -11,6 +11,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
             password: "12345",
             database: "dev-ecommerce",
             autoLoadEntities: true,
+            synchronize: false,
+            migrations: ["dist/database/migrations/*.js"],
         }),
     ],
 })

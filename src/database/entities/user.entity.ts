@@ -5,23 +5,24 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ length: 100 })
+    @Column({ length: 100, nullable: false })
     name: string;
 
-    @Column({ unique: true })
+    @Column({ unique: true, nullable: false })
     email: string;
 
-    @Column({ unique: true })
+    @Column({ unique: true, nullable: false })
     password: string;
 
-    @Column({ enum: ["admin", "customer"], default: "customer" })
+    @Column({
+        enum: ["admin", "customer"],
+        default: "customer",
+        nullable: false,
+    })
     role: string;
 
-    @Column()
+    @Column({ nullable: true })
     image: string;
-
-    @Column()
-    email_verified: boolean;
 
     @Column({ default: true })
     is_active: boolean;
