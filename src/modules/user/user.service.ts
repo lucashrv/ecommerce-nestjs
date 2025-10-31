@@ -39,8 +39,21 @@ export class UserService extends PrismaClient {
         return newUser;
     }
 
-    findAll() {
-        return `This action returns all user`;
+    async findAll() {
+        const users = await this.user.findMany({
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                image: true,
+                is_active: true,
+                createdAt: true,
+                updatedAt: true,
+            },
+        });
+
+        return users;
     }
 
     findOne(id: number) {
