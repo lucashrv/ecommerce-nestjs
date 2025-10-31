@@ -41,15 +41,8 @@ export class UserService extends PrismaClient {
 
     async findAll() {
         const users = await this.user.findMany({
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                role: true,
-                image: true,
-                is_active: true,
-                createdAt: true,
-                updatedAt: true,
+            omit: {
+                password: true,
             },
         });
 
