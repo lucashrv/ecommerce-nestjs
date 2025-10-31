@@ -1,15 +1,17 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { PrismaClient } from "@prisma/client";
 import * as bcrypt from "bcrypt";
+import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
-export class UserService extends PrismaClient {
+export class UserService {
+    constructor(private prisma: PrismaService) {}
+
     async create(body: CreateUserDto) {
         const { name, email, password, confirmPassword } = body;
 
-        const userEmail = await this.user.findFirst({
+        const userEmail = await this.prisma.user.findFirst({
             where: { email },
         });
 
@@ -24,7 +26,7 @@ export class UserService extends PrismaClient {
         const salt = bcrypt.genSaltSync(Number(process.env.BCRYPT_SALT));
         const hash = bcrypt.hashSync(password, salt);
 
-        const newUser = await this.user.create({
+        const newUser = await this.prisma.user.create({
             data: {
                 name,
                 email,
@@ -40,7 +42,7 @@ export class UserService extends PrismaClient {
     }
 
     async findAll() {
-        const users = await this.user.findMany({
+        const users = await this.prisma.user.findMany({
             omit: {
                 password: true,
             },
