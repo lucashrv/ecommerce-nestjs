@@ -1,0 +1,2 @@
+-- migration removed: original SQL for creating `sessions` table was here.
+-- This file was cleared by revert operation to avoid applying the session migration.

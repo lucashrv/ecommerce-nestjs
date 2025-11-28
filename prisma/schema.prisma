@@ -8,20 +8,31 @@ datasource db {
 }
 
 enum Role {
-    ADMIN
-    CUSTOMER
+  ADMIN
+  CUSTOMER
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String   @db.VarChar(255)
-  email     String   @unique
-  password  String   @db.VarChar(255)
-  role      Role     @default(CUSTOMER)
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(255)
+  email     String    @unique
+  password  String    @db.VarChar(255)
+  role      Role      @default(CUSTOMER)
   image     String?
-  is_active Boolean  @default(true)
-  updatedAt DateTime @default(now())
-  createdAt DateTime @default(now())
+  is_active Boolean   @default(true)
+  updatedAt DateTime  @default(now())
+  createdAt DateTime  @default(now())
+  sessions  Session[]
 
   @@map("users")
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id])
+  expires      DateTime
+
+  @@map("sessions")
 }

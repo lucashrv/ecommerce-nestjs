@@ -1,17 +1,21 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException,
+} from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
 import * as bcrypt from "bcrypt";
 import { PrismaService } from "src/prisma/prisma.service";
+import { DataUserDto } from "./dto/data-user.dto";
 
 @Injectable()
 export class UserService {
-    constructor(private prisma: PrismaService) {}
+    constructor(private readonly prisma: PrismaService) {}
 
-    async create(body: CreateUserDto) {
+    async create(body: CreateUserDto): Promise<DataUserDto> {
         const { name, email, password, confirmPassword } = body;
 
-        const userEmail = await this.prisma.user.findFirst({
+        const userEmail = await this.prisma.user.findUnique({
             where: { email },
         });
 
@@ -32,16 +36,14 @@ export class UserService {
                 email,
                 password: hash,
             },
-            select: {
-                id: true,
-                email: true,
-                name: true,
+            omit: {
+                password: true,
             },
         });
         return newUser;
     }
 
-    async findAll() {
+    async findAll(): Promise<DataUserDto[]> {
         const users = await this.prisma.user.findMany({
             omit: {
                 password: true,
@@ -51,20 +53,14 @@ export class UserService {
         return users;
     }
 
-    async findOne(id: number) {
+    async findOne(id: number): Promise<DataUserDto> {
         const user = await this.prisma.user.findUnique({
             where: { id },
             omit: { password: true },
         });
 
+        if (!user) throw new NotFoundException("Usuário não encontrado");
+
         return user;
-    }
-
-    update(id: number, updateUserDto: UpdateUserDto) {
-        return `This action updates a #${id} user`;
-    }
-
-    remove(id: number) {
-        return `This action removes a #${id} user`;
     }
 }
