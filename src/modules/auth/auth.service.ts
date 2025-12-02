@@ -36,7 +36,7 @@ export class AuthService {
 
         const sessionToken = randomUUID();
         const expires = add(new Date(), { days: 7 });
-        const session = await this.prisma.session.create({
+        await this.prisma.session.create({
             data: {
                 sessionToken,
                 userId: user.id,
@@ -55,10 +55,7 @@ export class AuthService {
             expires,
         });
 
-        return {
-            sessionId: session.sessionToken,
-            user: { id: user.id, email: user.email, name: user.name },
-        };
+        return { user: { id: user.id, email: user.email, name: user.name } };
     }
 
     async logout(sessionToken: string): Promise<void> {

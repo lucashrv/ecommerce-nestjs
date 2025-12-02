@@ -57,7 +57,6 @@ export class AuthController {
         message: string;
     }> {
         const userId = req.user?.id as string;
-        console.log(req.user);
 
         await this.authService.logoutAll(userId);
 
