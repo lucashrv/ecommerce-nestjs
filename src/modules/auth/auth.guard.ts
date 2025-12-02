@@ -28,6 +28,8 @@ export class AuthGuard implements CanActivate {
         if (session.revoked) throw new UnauthorizedException("Seção revogada");
         if (session.expires < new Date())
             throw new UnauthorizedException("Seção expirada");
+        if (!session?.user.is_active)
+            throw new UnauthorizedException("Usuário desabilitado");
 
         req.user = session.user;
 
