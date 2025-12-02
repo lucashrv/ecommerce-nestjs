@@ -13,7 +13,7 @@ enum Role {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
+  id        String    @id @default(uuid())
   name      String    @db.VarChar(255)
   email     String    @unique
   password  String    @db.VarChar(255)
@@ -30,9 +30,13 @@ model User {
 model Session {
   id           String   @id @default(uuid())
   sessionToken String   @unique
-  userId       Int
-  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+  userAgent    String   @db.VarChar(255)
+  deviceName   String?  @db.VarChar(255)
+  ipAddress    String   @db.VarChar(255)
+  revoked      Boolean  @default(false)
   expires      DateTime
+  user         User     @relation(fields: [userId], references: [id])
 
   @@map("sessions")
 }
