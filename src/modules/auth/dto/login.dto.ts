@@ -1,6 +1,5 @@
 import { Type } from "class-transformer";
 import {
-    IsDate,
     IsDefined,
     IsNotEmpty,
     IsNotEmptyObject,
@@ -13,11 +12,7 @@ import { DataUserDto } from "src/modules/user/dto/data-user.dto";
 export class LoginDto {
     @IsString()
     @IsNotEmpty()
-    sessionToken: string;
-
-    @IsDate()
-    @IsNotEmpty()
-    expires: Date;
+    sessionId: string;
 
     @IsDefined()
     @IsNotEmptyObject()

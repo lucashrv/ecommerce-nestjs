@@ -11,6 +11,10 @@ import { Role } from "@prisma/client";
 
 export class DataUserDto {
     @IsString()
+    @IsOptional()
+    id?: string;
+
+    @IsString()
     @MaxLength(255)
     @IsNotEmpty()
     name: string;

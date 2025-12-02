@@ -6,11 +6,14 @@ import {
     Req,
     Get,
     HttpCode,
+    UseGuards,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { Response, Request } from "express";
 import { credentialsDto } from "./dto/credentials.dto";
 import { DataUserDto } from "../user/dto/data-user.dto";
+import { LoginDto } from "./dto/login.dto";
+import { AuthGuard } from "./auth.guard";
 
 @Controller("auth")
 export class AuthController {
@@ -20,25 +23,16 @@ export class AuthController {
     @HttpCode(200)
     async login(
         @Body() body: credentialsDto,
+        @Req() req: Request,
         @Res({ passthrough: true }) res: Response,
-    ): Promise<DataUserDto> {
-        const { sessionToken, expires, user } =
-            await this.authService.login(body);
+    ): Promise<LoginDto> {
+        const login = await this.authService.login(body, req, res);
 
-        const secure = process.env.NODE_ENV === "production";
-
-        res.cookie("session", sessionToken, {
-            httpOnly: true,
-            secure,
-            sameSite: "lax",
-            path: "/",
-            expires,
-        });
-
-        return user;
+        return login;
     }
 
     @Post("logout")
+    @UseGuards(AuthGuard)
     async logout(
         @Req() req: Request,
         @Res({ passthrough: true }) res: Response,
@@ -51,10 +45,29 @@ export class AuthController {
 
         res.clearCookie("session", { path: "/" });
 
-        return { message: "Usuário efetuou logout" };
+        return { message: "Sessão encerrada" };
+    }
+
+    @Post("logout-all")
+    @UseGuards(AuthGuard)
+    async logoutAll(
+        @Req() req: Request,
+        @Res({ passthrough: true }) res: Response,
+    ): Promise<{
+        message: string;
+    }> {
+        const userId = req.user?.id as string;
+        console.log(req.user);
+
+        await this.authService.logoutAll(userId);
+
+        res.clearCookie("session", { path: "/" });
+
+        return { message: "Sessão encerrada" };
     }
 
     @Get("me")
+    @UseGuards(AuthGuard)
     async me(@Req() req: Request): Promise<DataUserDto> {
         const sessionToken = req.cookies?.session as string;
 
