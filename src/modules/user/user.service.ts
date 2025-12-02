@@ -53,7 +53,7 @@ export class UserService {
         return users;
     }
 
-    async findOne(id: number): Promise<DataUserDto> {
+    async findOne(id: string): Promise<DataUserDto> {
         const user = await this.prisma.user.findUnique({
             where: { id },
             omit: { password: true },
