@@ -9,7 +9,7 @@ import * as bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
 import { add } from "date-fns";
 import { credentialsDto } from "./dto/credentials.dto";
-import { DataUserDto } from "../user/dto/data-user.dto";
+import { UserDto } from "../user/dto/data-user.dto";
 import { LoginDto } from "./dto/login.dto";
 import { Request, Response } from "express";
 
@@ -77,7 +77,7 @@ export class AuthService {
         });
     }
 
-    async me(sessionToken: string): Promise<DataUserDto> {
+    async me(sessionToken: string): Promise<UserDto> {
         if (!sessionToken)
             throw new NotFoundException(
                 "Sessão não encontrada ou não existente",

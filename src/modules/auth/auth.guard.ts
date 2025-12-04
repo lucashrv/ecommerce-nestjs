@@ -24,10 +24,10 @@ export class AuthGuard implements CanActivate {
             include: { user: true },
         });
 
-        if (!session) throw new UnauthorizedException("Seção inválida");
-        if (session.revoked) throw new UnauthorizedException("Seção revogada");
+        if (!session) throw new UnauthorizedException("Sessão inválida");
+        if (session.revoked) throw new UnauthorizedException("Sessão revogada");
         if (session.expires < new Date())
-            throw new UnauthorizedException("Seção expirada");
+            throw new UnauthorizedException("Sessão expirada");
         if (!session?.user.is_active)
             throw new UnauthorizedException("Usuário desabilitado");
 

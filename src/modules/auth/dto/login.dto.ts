@@ -5,13 +5,13 @@ import {
     IsObject,
     ValidateNested,
 } from "class-validator";
-import { DataUserDto } from "src/modules/user/dto/data-user.dto";
+import { UserDto } from "src/modules/user/dto/data-user.dto";
 
 export class LoginDto {
     @IsDefined()
     @IsNotEmptyObject()
     @IsObject()
     @ValidateNested()
-    @Type(() => DataUserDto)
-    user: DataUserDto;
+    @Type(() => UserDto)
+    user: UserDto;
 }

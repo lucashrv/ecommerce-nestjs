@@ -6,7 +6,7 @@ import {
 import { CreateUserDto } from "./dto/create-user.dto";
 import * as bcrypt from "bcrypt";
 import { PrismaService } from "src/prisma/prisma.service";
-import { DataUserDto } from "./dto/data-user.dto";
+import { DataUserDto, UserDto } from "./dto/data-user.dto";
 
 @Injectable()
 export class UserService {
@@ -40,10 +40,10 @@ export class UserService {
                 password: true,
             },
         });
-        return newUser;
+        return { message: "Usuário criado com sucesso", data: newUser };
     }
 
-    async findAll(): Promise<DataUserDto[]> {
+    async findAll(): Promise<UserDto[]> {
         const users = await this.prisma.user.findMany({
             omit: {
                 password: true,
@@ -53,7 +53,7 @@ export class UserService {
         return users;
     }
 
-    async findOne(id: string): Promise<DataUserDto> {
+    async findOne(id: string): Promise<UserDto> {
         const user = await this.prisma.user.findUnique({
             where: { id },
             omit: { password: true },

@@ -5,22 +5,27 @@ import {
     Res,
     Req,
     Get,
-    HttpCode,
     UseGuards,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { Response, Request } from "express";
 import { credentialsDto } from "./dto/credentials.dto";
-import { DataUserDto } from "../user/dto/data-user.dto";
+import { UserDto } from "../user/dto/data-user.dto";
 import { LoginDto } from "./dto/login.dto";
 import { AuthGuard } from "./auth.guard";
+import {
+    LoginAuthDocs,
+    LogoutAllAuthDocs,
+    LogoutAuthDocs,
+    MeAuthDocs,
+} from "src/swagger/auth.swagger";
 
 @Controller("auth")
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @Post("login")
-    @HttpCode(200)
+    @LoginAuthDocs()
     async login(
         @Body() body: credentialsDto,
         @Req() req: Request,
@@ -33,6 +38,7 @@ export class AuthController {
 
     @Post("logout")
     @UseGuards(AuthGuard)
+    @LogoutAuthDocs()
     async logout(
         @Req() req: Request,
         @Res({ passthrough: true }) res: Response,
@@ -50,6 +56,7 @@ export class AuthController {
 
     @Post("logout-all")
     @UseGuards(AuthGuard)
+    @LogoutAllAuthDocs()
     async logoutAll(
         @Req() req: Request,
         @Res({ passthrough: true }) res: Response,
@@ -62,12 +69,13 @@ export class AuthController {
 
         res.clearCookie("session", { path: "/" });
 
-        return { message: "Sessão encerrada" };
+        return { message: "Todas as sessões encerradas" };
     }
 
     @Get("me")
+    @MeAuthDocs()
     @UseGuards(AuthGuard)
-    async me(@Req() req: Request): Promise<DataUserDto> {
+    async me(@Req() req: Request): Promise<UserDto> {
         const sessionToken = req.cookies?.session as string;
 
         const user = await this.authService.me(sessionToken);
