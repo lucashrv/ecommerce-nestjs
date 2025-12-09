@@ -12,9 +12,7 @@ export class AuthGuard implements CanActivate {
     constructor(private readonly prisma: PrismaService) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const req: Request & { user?: any } = context
-            .switchToHttp()
-            .getRequest();
+        const req: Request = context.switchToHttp().getRequest();
         const token = req.cookies?.session as string;
 
         if (!token) throw new UnauthorizedException("Não autenticado");
@@ -27,11 +25,13 @@ export class AuthGuard implements CanActivate {
         if (!session) throw new UnauthorizedException("Sessão inválida");
         if (session.revoked) throw new UnauthorizedException("Sessão revogada");
         if (session.expires < new Date())
-            throw new UnauthorizedException("Sessão expirada");
+            throw new UnauthorizedException(
+                "Sessão expirada, efetue o login novamente",
+            );
         if (!session?.user.is_active)
             throw new UnauthorizedException("Usuário desabilitado");
 
-        req.user = session.user;
+        req.user = { ...session.user, password: "" };
 
         return true;
     }

@@ -6,6 +6,21 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
+
+    const allowedOrigin = process.env.NEXT_URL;
+
+    app.enableCors({
+        origin: [allowedOrigin],
+        methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+        credentials: true,
+        allowedHeaders: [
+            "Content-Type",
+            "Authorization",
+            "X-Requested-With",
+            "Accept",
+        ],
+    });
+
     app.use(cookieParser());
 
     app.useGlobalPipes(

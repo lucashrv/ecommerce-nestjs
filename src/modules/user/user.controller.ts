@@ -7,7 +7,7 @@ import {
     FindAllUserDocs,
     FindOneUserDocs,
 } from "../../swagger/user.swagger";
-import { AuthGuard } from "../auth/auth.guard";
+import { AuthGuard } from "../auth/guards/auth.guard";
 
 @Controller("user")
 export class UserController {
@@ -15,21 +15,21 @@ export class UserController {
 
     @Post()
     @CreateUserDocs()
-    create(@Body() body: CreateUserDto): Promise<DataUserDto> {
-        return this.userService.create(body);
+    async create(@Body() body: CreateUserDto): Promise<DataUserDto> {
+        return await this.userService.create(body);
     }
 
     @Get()
     @UseGuards(AuthGuard)
     @FindAllUserDocs()
-    findAll(): Promise<UserDto[]> {
-        return this.userService.findAll();
+    async findAll(): Promise<UserDto[]> {
+        return await this.userService.findAll();
     }
 
     @Get("/:id")
     @UseGuards(AuthGuard)
     @FindOneUserDocs()
-    findOne(@Param("id") id: string): Promise<UserDto> {
-        return this.userService.findOne(id);
+    async findOne(@Param("id") id: string): Promise<UserDto> {
+        return await this.userService.findOne(id);
     }
 }

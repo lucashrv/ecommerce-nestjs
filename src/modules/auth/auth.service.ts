@@ -55,7 +55,12 @@ export class AuthService {
             expires,
         });
 
-        return { user: { id: user.id, email: user.email, name: user.name } };
+        req.user = { ...user, password: "" };
+
+        return {
+            message: "Usuário logado com sucesso",
+            user: { id: user.id, email: user.email, name: user.name },
+        };
     }
 
     async logout(sessionToken: string): Promise<void> {
@@ -77,30 +82,11 @@ export class AuthService {
         });
     }
 
-    async me(sessionToken: string): Promise<UserDto> {
-        if (!sessionToken)
-            throw new NotFoundException(
-                "Sessão não encontrada ou não existente",
-            );
+    me(req: Request): UserDto {
+        const user = req.user;
 
-        const session = await this.prisma.session.findUnique({
-            where: { sessionToken },
-            include: { user: true },
-        });
+        if (!user) throw new NotFoundException("Usuário não encontrado");
 
-        if (!session || !session.user)
-            throw new UnauthorizedException("Sessão inválida");
-
-        if (session.expires < new Date()) {
-            await this.prisma.session.delete({ where: { sessionToken } });
-            throw new UnauthorizedException(
-                "Sessão expirada, efetue o login novamente",
-            );
-        }
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password: _, ...safeUser } = session.user;
-
-        return safeUser;
+        return user;
     }
 }

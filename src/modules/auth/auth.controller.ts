@@ -12,13 +12,14 @@ import { Response, Request } from "express";
 import { credentialsDto } from "./dto/credentials.dto";
 import { UserDto } from "../user/dto/data-user.dto";
 import { LoginDto } from "./dto/login.dto";
-import { AuthGuard } from "./auth.guard";
+import { AuthGuard } from "./guards/auth.guard";
 import {
     LoginAuthDocs,
     LogoutAllAuthDocs,
     LogoutAuthDocs,
     MeAuthDocs,
 } from "src/swagger/auth.swagger";
+import { Role, Roles } from "./decorators/roles.decorator";
 
 @Controller("auth")
 export class AuthController {
@@ -36,9 +37,10 @@ export class AuthController {
         return login;
     }
 
-    @Post("logout")
     @UseGuards(AuthGuard)
+    @Roles(Role.ADMIN, Role.CUSTOMER)
     @LogoutAuthDocs()
+    @Post("logout")
     async logout(
         @Req() req: Request,
         @Res({ passthrough: true }) res: Response,
@@ -54,9 +56,10 @@ export class AuthController {
         return { message: "Sessão encerrada" };
     }
 
-    @Post("logout-all")
     @UseGuards(AuthGuard)
+    @Roles(Role.ADMIN, Role.CUSTOMER)
     @LogoutAllAuthDocs()
+    @Post("logout-all")
     async logoutAll(
         @Req() req: Request,
         @Res({ passthrough: true }) res: Response,
@@ -69,16 +72,15 @@ export class AuthController {
 
         res.clearCookie("session", { path: "/" });
 
-        return { message: "Todas as sessões encerradas" };
+        return { message: "Todas as sessões foram encerradas" };
     }
 
-    @Get("me")
-    @MeAuthDocs()
     @UseGuards(AuthGuard)
-    async me(@Req() req: Request): Promise<UserDto> {
-        const sessionToken = req.cookies?.session as string;
-
-        const user = await this.authService.me(sessionToken);
+    @Roles(Role.ADMIN, Role.CUSTOMER)
+    @MeAuthDocs()
+    @Get("me")
+    me(@Req() req: Request): UserDto {
+        const user = this.authService.me(req);
 
         return user;
     }
