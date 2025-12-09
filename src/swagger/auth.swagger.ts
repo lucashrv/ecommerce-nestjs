@@ -46,7 +46,7 @@ export function LoginAuthDocs() {
 export function LogoutAuthDocs() {
     return applyDecorators(
         ApiCookieAuth(),
-        ApiTags("User"),
+        ApiTags("Auth"),
         ApiOperation({ summary: "Encerra a sessão atual" }),
         ApiResponse({
             status: 200,
@@ -62,7 +62,7 @@ export function LogoutAuthDocs() {
 export function LogoutAllAuthDocs() {
     return applyDecorators(
         ApiCookieAuth(),
-        ApiTags("User"),
+        ApiTags("Auth"),
         ApiOperation({
             summary: "Encerra todas as sessões vinculadas ao usuário",
         }),
@@ -76,7 +76,7 @@ export function LogoutAllAuthDocs() {
 export function MeAuthDocs() {
     return applyDecorators(
         ApiCookieAuth(),
-        ApiTags("User"),
+        ApiTags("Auth"),
         ApiOperation({
             summary: "Retorna seu usuário logado",
         }),
