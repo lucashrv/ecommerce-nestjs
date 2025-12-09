@@ -21,7 +21,7 @@ export function CreateUserDocs() {
                         name: "Seu nome",
                         email: "email@example.com",
                         password: "123456",
-                        conformPassword: "123456",
+                        confirmPassword: "123456",
                     },
                 },
             },
